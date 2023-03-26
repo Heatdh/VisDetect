@@ -74,7 +74,7 @@ This repository contains the software for a robot that detects specific shapes a
 
 1. Clone the repository to your local machine or Jetson device:
 
-git clone https://github.com/yourusername/rapeseed-detection-robot.git
+git clone https://github.com/yourusername/VisDetect.git
 
 
 2. Change to the repository's directory:
