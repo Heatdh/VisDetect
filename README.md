@@ -41,8 +41,7 @@ git clone https://github.com/yourusername/rapeseed-detection-robot.git
 1. Ensure the robot and camera hardware are connected and configured properly.
 2. Run the main script to start the rapeseed detection and spray painting process:
 
-markdown
-Copy code
+
 # Rapeseed Detection and Spray Painting Robot
 
 This repository contains the software for a robot that detects specific shapes and colors to simulate the detection of male rapeseed plants. The robot moves towards the detected plants and controls a nozzle to spray paint them. The software is divided into three modules: control, vision, and motion. The software is designed to be deployed on an NVIDIA Jetson platform.
@@ -77,8 +76,6 @@ This repository contains the software for a robot that detects specific shapes a
 
 git clone https://github.com/yourusername/rapeseed-detection-robot.git
 
-vbnet
-Copy code
 
 2. Change to the repository's directory:
 
