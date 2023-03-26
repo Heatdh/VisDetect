@@ -84,23 +84,18 @@ Copy code
 
 cd rapeseed-detection-robot
 
-rust
-Copy code
 
 3. (Optional) Create a virtual environment for the project:
 
 python3 -m venv venv
 source venv/bin/activate
 
-markdown
-Copy code
+
 
 4. Install the required Python packages:
 
 pip install -r requirements.txt
 
-markdown
-Copy code
 
 ## Usage
 
@@ -108,9 +103,6 @@ Copy code
 2. Run the main script to start the rapeseed detection and spray painting process:
 
 python main.py
-
-vbnet
-Copy code
 
 3. Monitor the robot's progress and adjust parameters as needed.
 
