@@ -25,7 +25,7 @@ class VisualDetector:
 
     # get an image, return a list of Target.
     def getTargets(self, img) -> List[Target]:
-        pass
+        pass  
 
     def getActions(self, targets: List[Target]) -> Action:
         pass

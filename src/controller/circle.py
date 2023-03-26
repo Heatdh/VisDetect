@@ -35,8 +35,8 @@ def circle_detection(src):
             cv.circle(src, center, radius, (255, 0, 255), 3)
     
     
-    cv.imshow("detected circles", src)
-    cv.waitKey(0)
+    #cv.imshow("detected circles", src)
+    #cv.waitKey(0)
     
     if circles is not None:
         return circles[0, :]
@@ -44,10 +44,6 @@ def circle_detection(src):
 
 
 def circle_green_detection(src):
-    # Resize image to so width is 320, keep aspect ratio
-    width = 320
-    height = int(src.shape[0] * width / src.shape[1])
-    src = cv.resize(src, (width, height))
 
     # Convert the image to HSV color space
     hsv_image = cv.cvtColor(src, cv.COLOR_BGR2HSV)
@@ -67,8 +63,8 @@ def circle_green_detection(src):
     #cv.imshow("green mask", green_mask)
     rows = green_mask.shape[0]
     
-    find_circle = False
-    find_ellep = True
+    find_circle = True
+    find_ellep = False
 
     if find_circle==True:
         circles = cv.HoughCircles(green_mask, cv.HOUGH_GRADIENT, 1, rows / 8,
@@ -86,8 +82,8 @@ def circle_green_detection(src):
                 radius = i[2]
                 cv.circle(src, center, radius, (255, 0, 255), 3)
 
-        cv.imshow("detected circles", src)
-        cv.waitKey(0)
+        #cv.imshow("detected circles", src)
+        #cv.waitKey(0)
 
         if circles is not None:
             return circles[0, :]
@@ -100,13 +96,13 @@ def circle_green_detection(src):
             if area > 100:
                 ellipse = cv.fitEllipse(cnt)
                 center = (int(ellipse[0][0]), int(ellipse[0][1]))
-                cv.circle(src, center, 1, (0, 100, 100), 3)
-                cv.ellipse(src, ellipse, (0, 255, 0), 2)
+                #cv.circle(src, center, 1, (0, 100, 100), 3)
+                #cv.ellipse(src, ellipse, (0, 255, 0), 2)
         
-        cv.imshow("detected circles", src)
-        cv.waitKey(0)
+       #cv.imshow("detected circles", src)
+        #cv.waitKey(0)
         if ellipse is not None:
-            return ellipse[0]
+            return ellipse
 
 
     return []
