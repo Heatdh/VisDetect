@@ -3,27 +3,32 @@ import numpy as np
 import os
 
 
+def detect_green_circle(img):
+    h_circle = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 20, param1=50, param2=30, minRadius=0, maxRadius=0)
+    if h_circle is not None:
+        h_circle = np.uint16(np.around(h_circle))
+        for i in h_circle[0, :]:
+            cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
+            cv2.circle(img, (i[0], i[1]), 2, (0, 0, 255), 3)
+    return img
+
 
 
 def detect_green(img):
     #hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    # onlt
     lower_green = np.array([35, 43, 46])
     upper_green = np.array([77, 255, 255])
+    #shape detection circles as well
+   
+
     #mask = cv2.inRange(hsv, lower_green, upper_green)
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     img_hsv_blur = cv2.medianBlur(img_hsv, 15)
     mask = cv2.inRange(img_hsv_blur, lower_green, upper_green)
     mask = cv2.erode(mask, None, iterations=2) # 3x3 kernel used
     mask = cv2.dilate(mask, None, iterations=2)
-
-    #y_max, x_max = mask.shape
-
-    # Expand obstacle size by the radius of the thymio
-    #dilatation_size = int(thymio_radius*1.2) # add security margin of 20% of thymio's radius
-    #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2 * dilatation_size + 1,2 * dilatation_size + 1))
-    #mask_dilated = cv2.dilate(mask, kernel, iterations = 1)
-
-    #contours = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2] # RETR_EXTERNAL to get external contour, CHAIN_APPROX_SIMPLE to get geometrical shape 
+    
 
     output = cv2.bitwise_and(img, img, mask=mask)
 
@@ -48,6 +53,7 @@ def capture_video():
         if not ret:
             break
         mask = detect_green(frame)
+        #circle = detect_green_circle(frame)
         #cx, cy = get_center_mask(mask)
         cv2.imshow("frame", frame)
         cv2.imshow("mask", mask)
@@ -58,6 +64,8 @@ def capture_video():
     cap.release()
     cv2.destroyAllWindows()
 
+
 if __name__ == "__main__":
+    #capture_video()
     capture_video()
 
