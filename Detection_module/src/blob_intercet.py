@@ -43,6 +43,21 @@ def detect_circles_blob(frame):
 
     return circle_data
 
+
+def intersection_with_horizontal_line(circle_data, h):
+    intersection_points = []
+    for keypoint, _ in circle_data:
+        x, y = int(keypoint.pt[0]), int(keypoint.pt[1])
+        radius = int(keypoint.size / 2)
+        
+        if abs(h - y) <= radius:
+            dx = np.sqrt(radius ** 2 - (h - y) ** 2)
+            intersection_points.append((x - dx, h))
+            intersection_points.append((x + dx, h))
+
+    return intersection_points
+
+
 cap = cv.VideoCapture(0)
 
 while True:
@@ -61,6 +76,19 @@ while True:
 
     for keypoint, avg_color in circle_data:
         print(f"Circle at ({int(keypoint.pt[0])}, {int(keypoint.pt[1])}) has color {avg_color}")
+
+       # Define the horizontal line's height (e.g., half of the frame height)
+    h = frame.shape[0] // 2
+
+    # Draw the horizontal line
+    cv.line(frame_with_keypoints, (0, h), (frame.shape[1], h), (0, 255, 0), 2)
+
+    # Find the intersection points between the circles and the horizontal line
+    intersection_points = intersection_with_horizontal_line(circle_data, h)
+
+    # Draw the intersection points
+    for point in intersection_points:
+        cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
 
     cv.imshow('Robot Controller', frame_with_keypoints)
 
