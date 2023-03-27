@@ -6,7 +6,7 @@ def circle_detection(src):
     # Resize image to so width is 320, keep aspect ratio
     width = 320
     height = int(src.shape[0] * width / src.shape[1])
-    src = cv.resize(src, (width, height))
+    #src = cv.resize(src, (width, height))
     
     gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
     
@@ -18,7 +18,7 @@ def circle_detection(src):
     rows = gray.shape[0]
     circles = cv.HoughCircles(gray, cv.HOUGH_GRADIENT, 1, rows / 8,
                                param1=100, param2=30,
-                               minRadius=1, maxRadius=100)
+                               minRadius=5, maxRadius=100)
     
 
 
@@ -29,10 +29,10 @@ def circle_detection(src):
         for i in circles[0, :]:
             center = (i[0], i[1])
             # circle center
-            cv.circle(src, center, 1, (0, 100, 100), 3)
+            #cv.circle(src, center, 1, (0, 100, 100), 3)
             # circle outline
             radius = i[2]
-            cv.circle(src, center, radius, (255, 0, 255), 3)
+            #cv.circle(src, center, radius, (255, 0, 255), 3)
     
     
     #cv.imshow("detected circles", src)
@@ -69,7 +69,7 @@ def circle_green_detection(src):
     if find_circle==True:
         circles = cv.HoughCircles(green_mask, cv.HOUGH_GRADIENT, 1, rows / 8,
                                 param1=100, param2=30,
-                                minRadius=1, maxRadius=100)
+                                minRadius=5, maxRadius=100)
 
         # Return list circles
         if circles is not None:
@@ -77,10 +77,10 @@ def circle_green_detection(src):
             for i in circles[0, :]:
                 center = (i[0], i[1])
                 # circle center
-                cv.circle(src, center, 1, (0, 100, 100), 3)
+                #cv.circle(src, center, 1, (0, 100, 100), 3)
                 # circle outline
                 radius = i[2]
-                cv.circle(src, center, radius, (255, 0, 255), 3)
+                #cv.circle(src, center, radius, (255, 0, 255), 3)
 
         #cv.imshow("detected circles", src)
         #cv.waitKey(0)
