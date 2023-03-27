@@ -36,6 +36,7 @@ while True:
         break
 
     keypoints = detect_circles_blob(frame)
+    #print(keypoints)
 
     frame_with_keypoints = cv.drawKeypoints(frame, keypoints, np.array([]), (0, 0, 255),
                                             cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
