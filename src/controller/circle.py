@@ -2,13 +2,25 @@ import sys
 import cv2 as cv
 import numpy as np
 
-def circle_detection(src):
+DEFAULT_WIDTH = 640
+
+def circle_detection(frame, return_image=False, width=DEFAULT_WIDTH):
+    """
+    Detects circles in the given frame.
+    Args:
+        frame (numpy.ndarray): The frame to detect circles in.
+        return_image (bool): Whether to return the processed image with the circles drawn on it.
+
+    Returns:
+        list of circles (x, y, radius) if return_image is False 
+        else (list of circles, processed image)
+    """
     # Resize image to so width is 320, keep aspect ratio
     width = 320
-    height = int(src.shape[0] * width / src.shape[1])
+    height = int(frame.shape[0] * width / frame.shape[1])
     #src = cv.resize(src, (width, height))
     
-    gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     
     # Increase kernel size make it more robust against noise
     # gray = cv.medianBlur(gray, 5)
@@ -37,6 +49,8 @@ def circle_detection(src):
     
     #cv.imshow("detected circles", src)
     #cv.waitKey(0)
+    if return_image:
+        return circles, frame
     
     if circles is not None:
         return circles[0, :]
