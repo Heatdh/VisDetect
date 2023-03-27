@@ -58,42 +58,43 @@ def intersection_with_horizontal_line(circle_data, h):
     return intersection_points
 
 
-cap = cv.VideoCapture(0)
+if __name__ == "__main__":
+    cap = cv.VideoCapture(0)
 
-while True:
-    ret, frame = cap.read()
-    width = 320
-    height = int(frame.shape[0] * width / frame.shape[1])
-    dim = (width, height)
-    frame = cv.resize(frame, dim, interpolation=cv.INTER_AREA)
+    while True:
+        ret, frame = cap.read()
+        width = 320
+        height = int(frame.shape[0] * width / frame.shape[1])
+        dim = (width, height)
+        frame = cv.resize(frame, dim, interpolation=cv.INTER_AREA)
 
-    if not ret:
-        break
+        if not ret:
+            break
 
-    circle_data = detect_circles_blob(frame)
-    frame_with_keypoints = cv.drawKeypoints(frame, [data[0] for data in circle_data], np.array([]), (0, 0, 255),
-                                            cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        circle_data = detect_circles_blob(frame)
+        frame_with_keypoints = cv.drawKeypoints(frame, [data[0] for data in circle_data], np.array([]), (0, 0, 255),
+                                                cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
-    for keypoint, avg_color in circle_data:
-        print(f"Circle at ({int(keypoint.pt[0])}, {int(keypoint.pt[1])}) has color {avg_color}")
+        for keypoint, avg_color in circle_data:
+            print(f"Circle at ({int(keypoint.pt[0])}, {int(keypoint.pt[1])}) has color {avg_color}")
 
-       # Define the horizontal line's height (e.g., half of the frame height)
-    h = frame.shape[0] // 2
+        # Define the horizontal line's height (e.g., half of the frame height)
+        h = frame.shape[0] // 2
 
-    # Draw the horizontal line
-    cv.line(frame_with_keypoints, (0, h), (frame.shape[1], h), (0, 255, 0), 2)
+        # Draw the horizontal line
+        cv.line(frame_with_keypoints, (0, h), (frame.shape[1], h), (0, 255, 0), 2)
 
-    # Find the intersection points between the circles and the horizontal line
-    intersection_points = intersection_with_horizontal_line(circle_data, h)
+        # Find the intersection points between the circles and the horizontal line
+        intersection_points = intersection_with_horizontal_line(circle_data, h)
 
-    # Draw the intersection points
-    for point in intersection_points:
-        cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
+        # Draw the intersection points
+        for point in intersection_points:
+            cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
 
-    cv.imshow('Robot Controller', frame_with_keypoints)
+        cv.imshow('Robot Controller', frame_with_keypoints)
 
-    if cv.waitKey(1) & 0xFF == ord('q'):
-        break
+        if cv.waitKey(1) & 0xFF == ord('q'):
+            break
 
-cap.release()
-cv.destroyAllWindows()
+    cap.release()
+    cv.destroyAllWindows()
