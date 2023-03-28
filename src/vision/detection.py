@@ -1,8 +1,36 @@
 import cv2 as cv
 import numpy as np
-class VisDetector():
-    def __init__(self) -> None:
-        pass
+
+
+def control_system(green_circle_intersections, vertical_line_x, circle_data, green_circle_coordinates):
+    stop = False
+    move = False
+    spray_right = False
+    spray_left = False
+
+    if len(circle_data) > 0:
+        move = True
+    if len(green_circle_coordinates) == 0:
+        move = True
+
+    if len(circle_data) == 0:
+        stop = True
+
+    if len(green_circle_intersections) > 0:
+        stop = True
+        move = False
+
+        for point in green_circle_intersections:
+            if point[0] > vertical_line_x:
+                spray_right = True
+                break
+            elif point[0] < vertical_line_x:
+                spray_left = True
+                break
+
+    return stop, move, spray_right, spray_left
+
+
 
 def detect_circles_blob(frame):
     params = cv.SimpleBlobDetector_Params()
