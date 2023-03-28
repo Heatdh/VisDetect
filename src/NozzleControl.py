@@ -1,12 +1,14 @@
 from enum import Enum
 
-class SprayPosition(Enum):
-    Left = 0,
-    Right = 1
 
 class NozzleControl:
-    def __init__(self):
+    def __init__(self, leftNozzlePin:int, rightNozzlePin:int):
+        self.leftNozzlePin = leftNozzlePin
+        self.rightNozzlePin = rightNozzlePin
         pass
 
-    def spray(sprayPosition : SprayPosition):
+    def sprayLeft(self):
+        pass
+
+    def sprayRight(self):
         pass
