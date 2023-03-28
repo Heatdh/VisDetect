@@ -1,5 +1,5 @@
 import cv2
-from camera.abstract_camera import AbstractCamera
+from abstract_camera import AbstractCamera
 
 class LaptopCamera(AbstractCamera):
     def __init__(self, camera_index=0):
