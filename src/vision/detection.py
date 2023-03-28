@@ -119,9 +119,9 @@ if __name__ == "__main__":
         h = frame.shape[0] // 2
 
         # Draw the horizontal line
-        cv.line(frame_with_keypoints, (0, h), (frame.shape[1], h), (0, 255, 0), 2)
+        cv.line(frame_with_keypoints, (0, h), (frame.shape[1], h), (255, 0, 0), 2)
         # draw vertical line 
-        cv.line(frame_with_keypoints, (frame.shape[1]//2, 0), (frame.shape[1]//2, frame.shape[0]), (0, 255, 0), 2)
+        cv.line(frame_with_keypoints, (frame.shape[1]//2, 0), (frame.shape[1]//2, frame.shape[0]), (255, 0, 0), 2)
 
         # Find the intersection points between the circles and the horizontal line
         intersection_points = intersection_with_horizontal_line(circle_data, h)
@@ -132,6 +132,7 @@ if __name__ == "__main__":
         for coord in green_circle_coordinates:
             print(f"Green circle at {coord}")
         print(f"in each frame there are {len(green_circle_coordinates)} green circles")
+        cv.putText(frame_with_keypoints, f"Green circles: {len(green_circle_coordinates)}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
 
         if len(green_circle_coordinates) > 0:
             green_circle_intersections = intersection_green_horizontal(green_circle_coordinates, h)
@@ -139,14 +140,15 @@ if __name__ == "__main__":
             if len(green_circle_intersections)> 0:
                 for point in green_circle_intersections:
                     cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
+                if len(green_circle_intersections) > 0:
+                    cv.putText(frame_with_keypoints, "Green Intersection: True", (10, 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
+                else:
+                    cv.putText(frame_with_keypoints, "Green Intersection: False", (10, 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
 
-        # Draw the intersection points
-        #if green_circle_intersections is not None:
-        #    for point in green_circle_intersections:
-        #        cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
-                
-        #for point in intersection_points:
-        #  cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
+        if len(intersection_points) > 0:
+            cv.putText(frame_with_keypoints, "Intersection: True", (10, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
+        else:
+            cv.putText(frame_with_keypoints, "Intersection: False", (10, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
 
         
 
