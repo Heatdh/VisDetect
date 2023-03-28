@@ -2,12 +2,12 @@ import cv2 as cv
 import numpy as np
 
 from src.VisualDetector import VisualDetector
-from src.DecisionMaker import Control
+from src.DecisionMaker import DecisionMaker
 
 if __name__ == "__main__":
     cap = cv.VideoCapture(0)
     vision_detector = VisualDetector()
-    control = Control()
+    control = DecisionMaker()
 
     while True:
         ret, frame = cap.read()

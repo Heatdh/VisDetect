@@ -1,4 +1,4 @@
-class Control:
+class DecisionMaker:
     def __init__(self):
         self.move = 0
         self.stop = 0
