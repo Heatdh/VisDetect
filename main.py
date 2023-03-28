@@ -1,14 +1,44 @@
 import cv2 as cv
 import numpy as np
+from queue import Queue
+from threading import Thread
+from flask import Flask, render_template, Response
+import time
+from threading import Thread
+
 
 from src.VisualDetector import VisualDetector
 from src.DecisionMaker import DecisionMaker
+app = Flask(__name__)
+
+def gen(queue):
+    while True:
+        if not queue.empty():
+            frame = queue.get()
+            ret, jpeg = cv.imencode('.jpg', frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+        else:
+            time.sleep(0.01)
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(app.queue),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+def run_web_server(queue):
+    app.queue = queue
+    app.run()
+
+
 
 if __name__ == "__main__":
     cap = cv.VideoCapture(0)
+    queue = Queue() 
     vision_detector = VisualDetector()
     control = DecisionMaker()
-
+    t = Thread(target=run_web_server, args=(queue,))
+    t.start()
     while True:
         ret, frame = cap.read()
         width = 320
@@ -48,7 +78,7 @@ if __name__ == "__main__":
         cv.putText(frame_with_keypoints, f"Stop: {control.stop}, Move: {control.move}", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
         cv.putText(frame_with_keypoints, f"Spray Right: {control.spray_right}, Spray Left: {control.spray_left}", (10, 120), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
         cv.putText(frame_with_keypoints, f"Green circles: {len(green_circle_coordinates)}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
-
+        queue.put(frame_with_keypoints)
         cv.imshow('Robot Controller', frame_with_keypoints)
 
         if cv.waitKey(1) & 0xFF == ord('q'):
