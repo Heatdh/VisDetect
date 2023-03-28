@@ -137,13 +137,17 @@ if __name__ == "__main__":
         if len(green_circle_coordinates) > 0:
             green_circle_intersections = intersection_green_horizontal(green_circle_coordinates, h)
             print(f"green circle intersections {green_circle_intersections}")
-            if len(green_circle_intersections)> 0:
+            if len(green_circle_intersections) > 0:
+                vertical_line_x = frame.shape[1] // 2
                 for point in green_circle_intersections:
                     cv.circle(frame_with_keypoints, (int(point[0]), int(point[1])), 3, (255, 0, 0), -1)
-                if len(green_circle_intersections) > 0:
-                    cv.putText(frame_with_keypoints, "Green Intersection: True", (10, 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
-                else:
-                    cv.putText(frame_with_keypoints, "Green Intersection: False", (10, 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
+                    if point[0] > vertical_line_x:
+                        position = "Right"
+                    else:
+                        position = "Left"
+                    cv.putText(frame_with_keypoints, f"Green Intersection: {position}", (10, 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
+            else:
+                cv.putText(frame_with_keypoints, "Green Intersection: False", (10, 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
 
         if len(intersection_points) > 0:
             cv.putText(frame_with_keypoints, "Intersection: True", (10, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
