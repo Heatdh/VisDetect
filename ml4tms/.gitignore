@@ -1,0 +1,9 @@
+*.pt
+*.pyc
+*.pyo
+
+data/daisy/
+data/dandelion/
+data/rose/
+data/sunflower/
+data/tulip/
