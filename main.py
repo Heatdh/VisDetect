@@ -21,7 +21,7 @@ from src.PiCamera import PiCamera
 
 # define pins here
 NOZZLE_LEFT_CHANNEL=4
-NOZZLE_RIGHT_CHANNEL=7
+NOZZLE_RIGHT_CHANNEL=15
 
 
 ############TEST################
