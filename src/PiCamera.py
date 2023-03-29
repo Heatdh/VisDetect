@@ -3,7 +3,7 @@ from src.AbstractCamera import AbstractCamera
 
 class PiCamera(AbstractCamera):
     def __init__(self, camera_index=0):
-        self.video = cv2.VideoCapture(self.gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
+        self.video = cv2.VideoCapture(self.gstreamer_pipeline(flip_method=2), cv2.CAP_GSTREAMER)
         if not self.video.isOpened():
             raise Exception("Camera is not opened")
 
