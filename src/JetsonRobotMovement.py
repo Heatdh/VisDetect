@@ -1,7 +1,6 @@
-from controller.robot_movement import RobotMovement
-from controller.stepper_motor import StepperMotor
+from src.StepperMotor import StepperMotor
 
-class JetsonRobotMovement(RobotMovement):
+class JetsonRobotMovement():
     """ Controls the movement of the robot using the Nvidia Jetson Nano GPIO pins.
 
     Args:
