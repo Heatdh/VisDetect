@@ -1,2 +1,4 @@
 Jetson.GPIO
+setuptools-scm==6.0.1 # Need this due to a bug in adafruit-servokit (https://github.com/adafruit/Adafruit_Python_PlatformDetect/issues/225)
+adafruit-circuitpython-servokit==1.3.5
 # opencv-python #come with jetson nano
