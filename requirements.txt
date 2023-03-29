@@ -1,2 +1,2 @@
 Jetson.GPIO
-opencv-python
+# opencv-python #come with jetson nano

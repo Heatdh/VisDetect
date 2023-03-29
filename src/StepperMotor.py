@@ -1,6 +1,5 @@
 import time
 import Jetson.GPIO as GPIO
-from robot_movement import RobotMovement
 
 class StepperMotor:
     """ Controls a stepper motor using the DRV8825 driver with NEMA 17 stepper motors
@@ -14,7 +13,6 @@ class StepperMotor:
         self.ms_per_step = 1 / (self.rpm * 200 / 60)
         
         # Set up the GPIO pins for the DRV8825 driver
-        GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.step_pin, GPIO.OUT)
         GPIO.setup(self.dir_pin, GPIO.OUT)
         GPIO.setup(self.enable_pin, GPIO.OUT)
