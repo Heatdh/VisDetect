@@ -8,7 +8,7 @@ class StepperMotor:
     def __init__(self, step_pin, dir_pin):
         self.step_pin = step_pin
         self.dir_pin = dir_pin
-        self.rpm = 3600
+        self.rpm = 1200
         self.ms_per_step = 1 / (self.rpm * 200 / 60)
         
         # Set up the GPIO pins for the DRV8825 driver

@@ -6,6 +6,7 @@ from flask import Flask, render_template, Response
 import time
 from threading import Thread
 import Jetson.GPIO as GPIO
+import board
 
 
 from src.VisualDetector import VisualDetector
@@ -14,13 +15,36 @@ from src.NozzleControl import NozzleControl
 from src.LaptopCamera import LaptopCamera
 from src.PiCamera import PiCamera
 
-# Set up board
-GPIO.setmode(GPIO.BOARD)
+
+# NOTE: adafruit_blinka already called GPIO.setmode(GPIO.TEGRA_SOC)
+# the rest of the software MUST use this pin mode naming.
+
 # define pins here
 NOZZLE_LEFT_CHANNEL=4
 NOZZLE_RIGHT_CHANNEL=7
 
 
+############TEST################
+TEST_ONLY=False
+if TEST_ONLY:
+    output_pin = board.D17  # BOARD pin 11
+    def main():
+        # set pin as an output pin with optional initial state of HIGH
+        GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.HIGH)
+
+        print("Starting demo now! Press CTRL+C to exit")
+        curr_value = GPIO.HIGH
+        try:
+            while True:
+                time.sleep(4)
+                # Toggle the output every second
+                print("Outputting {} to pin {}".format(curr_value, output_pin))
+                GPIO.output(output_pin, curr_value)
+                curr_value ^= GPIO.HIGH
+        finally:
+            GPIO.cleanup()
+    main()
+#################################
 
 app = Flask(__name__)
 cap = PiCamera()
