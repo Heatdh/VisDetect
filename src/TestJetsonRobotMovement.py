@@ -12,17 +12,23 @@ RIGHT_DIR_PIN=str(board.D26)
 GPIO.setmode(GPIO.TEGRA_SOC)
 
 robotMovement = JetsonRobotMovement([LEFT_STEP_PIN, LEFT_DIR_PIN], [RIGHT_STEP_PIN, RIGHT_DIR_PIN])
-print("move forward")
-robotMovement.move_forward(1000)
 
-time.sleep(2)
+print("move forward")
+robotMovement.move_forward(350)
+
+time.sleep(1)
+
+print("move backward")
+robotMovement.move_backward(350)
+
+time.sleep(1)
 
 print("step_left")
-robotMovement.step_left(90)
+robotMovement.step_left()
 
-time.sleep(2)
+time.sleep(1)
 
 print("step_right")
-robotMovement.step_right(90)
+robotMovement.step_right()
 
 GPIO.cleanup()
