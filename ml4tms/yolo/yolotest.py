@@ -4,6 +4,10 @@ import numpy as np
 from pykalman import KalmanFilter
 
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+#model.conf = 0.4
+#model.iou = 0.5
+model.classes = [15, 16]
+
 
 class Tracker:
     def __init__(self):
@@ -36,16 +40,16 @@ while cap.isOpened():
             index = int(cls)
 
             # Only process car (COCO index 2) and truck (COCO index 7) detections
-            if (index == 2 or index == 7) and conf >= confidence_threshold:
-                x1, y1, x2, y2 = map(int, xyxy)
-                cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
+            #if (index == 2 or index == 7) and conf >= confidence_threshold:
+            x1, y1, x2, y2 = map(int, xyxy)
+            cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
 
-                if index not in trackers:
-                    trackers[index] = Tracker()
-                    trackers[index].init(cx, cy)
-                else:
-                    cx, cy = trackers[index].update(cx, cy)
-                    x1, y1, x2, y2 = int(cx - (x2 - x1) / 2), int(cy - (y2 - y1) / 2), int(cx + (x2 - x1) / 2), int(cy + (y2 - y1) / 2)
+            if index not in trackers:
+                trackers[index] = Tracker()
+                trackers[index].init(cx, cy)
+            else:
+                cx, cy = trackers[index].update(cx, cy)
+                x1, y1, x2, y2 = int(cx - (x2 - x1) / 2), int(cy - (y2 - y1) / 2), int(cx + (x2 - x1) / 2), int(cy + (y2 - y1) / 2)
 
                 label = f'{model.names[index]}: {conf:.2f}'
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)

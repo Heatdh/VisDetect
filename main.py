@@ -15,6 +15,7 @@ from src.PiCamera import PiCamera
 
 app = Flask(__name__)
 cap = PiCamera()
+#cap = LaptopCamera()
 
 # Set up board
 GPIO.setmode(GPIO.BOARD)
@@ -93,7 +94,10 @@ if __name__ == "__main__":
             cv.putText(frame_with_keypoints, f"Stop: {decisionMaker.stop}, Move: {decisionMaker.move}", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
             cv.putText(frame_with_keypoints, f"Spray Right: {decisionMaker.spray_right}, Spray Left: {decisionMaker.spray_left}", (10, 120), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
             cv.putText(frame_with_keypoints, f"Green circles: {len(green_circle_coordinates)}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
+            # stretch the image to fit the screen on the web page
+            frame_with_keypoints = cv.resize(frame_with_keypoints, (frame_with_keypoints.shape[1] * 2, frame_with_keypoints.shape[0] * 2))
             queue.put(frame_with_keypoints)
+
             cv.imshow('Robot Controller', frame_with_keypoints)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
