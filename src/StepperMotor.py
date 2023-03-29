@@ -26,19 +26,11 @@ class StepperMotor:
         # Set up the GPIO pins for the DRV8825 driver
         GPIO.setup(self.step_pin, GPIO.OUT)
         GPIO.setup(self.dir_pin, GPIO.OUT)
-        GPIO.setup(self.enable_pin, GPIO.OUT)
 
         # Set the direction of rotation
         GPIO.output(self.dir_pin, GPIO.HIGH)  # CW
         # GPIO.output(self.dir_pin, GPIO.LOW)  # CCW
 
-        # Set the step resolution (microstepping)
-        GPIO.output(22, GPIO.HIGH)  # MS1
-        GPIO.output(24, GPIO.HIGH)  # MS2
-        GPIO.output(26, GPIO.HIGH)  # MS3
-
-        # Set the enable pin to high to enable the driver
-        GPIO.output(self.enable_pin, GPIO.HIGH)
 
     def move_steps(self, steps, direction):
         # Set the direction of rotation
@@ -55,6 +47,5 @@ class StepperMotor:
             time.sleep(self.s_per_step / 2)
 
     def stop(self):
-        # Disable the driver by setting the enable pin to low
-        GPIO.output(self.enable_pin, GPIO.LOW)
+        pass
 
