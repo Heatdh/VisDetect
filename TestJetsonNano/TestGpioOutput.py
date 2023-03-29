@@ -20,14 +20,15 @@
 # DEALINGS IN THE SOFTWARE.
 
 import RPi.GPIO as GPIO
+import board
 import time
 
 # Pin Definitions
-output_pin = 11  # BCM pin 18, BOARD pin 12
+output_pin = str(board.D27)  # BOARD pin 13
 
 def main():
     # Pin Setup:
-    GPIO.setmode(GPIO.BOARD)  # BCM pin-numbering scheme from Raspberry Pi
+    GPIO.setmode(GPIO.TEGRA_SOC)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH
     GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.HIGH)
 

@@ -6,6 +6,7 @@ from flask import Flask, render_template, Response
 import time
 from threading import Thread
 import Jetson.GPIO as GPIO
+import board
 
 
 from src.VisualDetector import VisualDetector
@@ -14,8 +15,10 @@ from src.NozzleControl import NozzleControl
 from src.LaptopCamera import LaptopCamera
 from src.PiCamera import PiCamera
 
-# Set up board
-GPIO.setmode(GPIO.BOARD)
+
+# NOTE: adafruit_blinka already called GPIO.setmode(GPIO.TEGRA_SOC)
+# the rest of the software MUST use this pin mode naming.
+
 # define pins here
 NOZZLE_LEFT_CHANNEL=4
 NOZZLE_RIGHT_CHANNEL=7
