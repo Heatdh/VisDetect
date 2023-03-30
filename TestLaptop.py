@@ -5,16 +5,16 @@ from threading import Thread
 from flask import Flask, render_template, Response
 import time
 from threading import Thread
-import Jetson.GPIO as GPIO
-import board
+#import Jetson.GPIO as GPIO
+#import board
 
 
 from src.VisualDetector import VisualDetector
 from src.DecisionMaker import DecisionMaker
-from src.NozzleControl import NozzleControl
+#from src.NozzleControl import NozzleControl
 from src.LaptopCamera import LaptopCamera
 from src.PiCamera import PiCamera
-from src.JetsonRobotMovement import JetsonRobotMovement
+#from src.JetsonRobotMovement import JetsonRobotMovement
 
 
 # NOTE: adafruit_blinka already called GPIO.setmode(GPIO.TEGRA_SOC)
@@ -22,17 +22,16 @@ from src.JetsonRobotMovement import JetsonRobotMovement
 
 # define pins here
 NOZZLE_LEFT_CHANNEL=4
-NOZZLE_RIGHT_CHANNEL=11
+NOZZLE_RIGHT_CHANNEL=15
 
 
 app = Flask(__name__)
-cap = PiCamera()
-#cap = LaptopCamera()
-nozzleControl = NozzleControl(NOZZLE_LEFT_CHANNEL, NOZZLE_RIGHT_CHANNEL)
-lastImage = None
+#cap = PiCamera()
+cap = LaptopCamera()
+#nozzleControl = NozzleControl(NOZZLE_LEFT_CHANNEL, NOZZLE_RIGHT_CHANNEL)
 
 # Set up board
-GPIO.setmode(GPIO.BOARD)
+#GPIO.setmode(GPIO.BOARD)
 # TODO define pins here
 LEFT_MOTOR_PINS = [11, 13, 15, 16]
 RIGHT_MOTOR_PINS = [18, 22, 32, 36]
@@ -48,16 +47,13 @@ MOVE_STEP_CM = 0.5
 
 def gen(queue):
     while True:
-        frame = None
         if not queue.empty():
             frame = queue.get()
-            lastImage = frame
+            ret, jpeg = cv.imencode('.jpg', frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
         else:
-            frame = lastImage
-        ret, jpeg = cv.imencode('.jpg', frame)
-        yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
-
+            time.sleep(0.01)
 
 @app.route('/video_feed')
 def video_feed():
@@ -82,7 +78,7 @@ if __name__ == "__main__":
     queue = Queue() 
     vision_detector = VisualDetector()
     decisionMaker = DecisionMaker()
-    robot_movement = JetsonRobotMovement()
+    #robot_movement = JetsonRobotMovement()
     t = Thread(target=run_web_server, args=(queue,))
     t.start()
 
@@ -139,11 +135,14 @@ if __name__ == "__main__":
 
             ######################### ACTION SECTION ##############################
             if decisionMaker.spray_left and decisionMaker.spray_right:
-                nozzleControl.sprayBoth()
+                #nozzleControl.sprayBoth()
+                pass
             elif decisionMaker.spray_left:
-                nozzleControl.sprayLeft()
+                #nozzleControl.sprayLeft()
+                pass
             elif decisionMaker.spray_right:
-                nozzleControl.sprayRight()
+                #nozzleControl.sprayRight()
+                pass
             ###################### END ACTION SECTION #############################
 
             if cv.waitKey(1) & 0xFF == ord('q'):
@@ -159,9 +158,10 @@ if __name__ == "__main__":
             
             # Move forward if distance to green circle is greater than 0.5 cm
             if distance_to_green_circle_cm > MOVE_STEP_CM:
-                robot_movement.move_forward(MOVE_STEP_CM)
+                print(f"Moving forward {MOVE_STEP_CM} cm")
+                #robot_movement.move_forward(MOVE_STEP_CM)
             
     finally:
         cv.destroyAllWindows()
-        GPIO.cleanup()
+        #GPIO.cleanup()
         t.join()
