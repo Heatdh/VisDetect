@@ -1,4 +1,4 @@
-from StepperMotor import StepperMotor
+from src.StepperMotor import StepperMotor
 import Jetson.GPIO as GPIO
 
 PI = 3.1415926

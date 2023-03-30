@@ -21,21 +21,19 @@ from src.JetsonRobotMovement import JetsonRobotMovement
 # the rest of the software MUST use this pin mode naming.
 
 # define pins here
-NOZZLE_LEFT_CHANNEL=4
-NOZZLE_RIGHT_CHANNEL=11
-
+NOZZLE_LEFT_CHANNEL=11
+NOZZLE_RIGHT_CHANNEL=4
+LEFT_STEP_PIN=str(board.D16)
+LEFT_DIR_PIN=str(board.D20)
+RIGHT_STEP_PIN=str(board.D19)
+RIGHT_DIR_PIN=str(board.D26)
+ENABLE_PIN=str(board.D4)
 
 app = Flask(__name__)
 cap = PiCamera()
 #cap = LaptopCamera()
 nozzleControl = NozzleControl(NOZZLE_LEFT_CHANNEL, NOZZLE_RIGHT_CHANNEL)
 lastImage = None
-
-# Set up board
-GPIO.setmode(GPIO.BOARD)
-# TODO define pins here
-LEFT_MOTOR_PINS = [11, 13, 15, 16]
-RIGHT_MOTOR_PINS = [18, 22, 32, 36]
 
 # TODO Define Raspberry Pi camera parameters
 CAMERA_HEIGHT_CM = 55.0
@@ -82,7 +80,7 @@ if __name__ == "__main__":
     queue = Queue() 
     vision_detector = VisualDetector()
     decisionMaker = DecisionMaker()
-    robot_movement = JetsonRobotMovement()
+    robot_movement = JetsonRobotMovement(ENABLE_PIN, [LEFT_STEP_PIN, LEFT_DIR_PIN], [RIGHT_STEP_PIN, RIGHT_DIR_PIN])
     t = Thread(target=run_web_server, args=(queue,))
     t.start()
 
@@ -124,7 +122,7 @@ if __name__ == "__main__":
                     else:
                         intersection_side = 'left'
 
-            decisionMaker.update_control(green_circle_coordinates, green_intersection, intersection_side)
+            decisionMaker.update_control(circle_data, green_circle_coordinates, green_intersection, intersection_side)
             ############################# END DRAWING ONLY #############################
 
 
@@ -138,12 +136,24 @@ if __name__ == "__main__":
             cv.imshow('Robot Controller', frame_with_keypoints)
 
             ######################### ACTION SECTION ##############################
+            MOVE_AFTER_SPRAY = 5
             if decisionMaker.spray_left and decisionMaker.spray_right:
+                print("sprayBoth")
                 nozzleControl.sprayBoth()
+                robot_movement.move_forward(MOVE_AFTER_SPRAY)
+                time.sleep(1)
             elif decisionMaker.spray_left:
+                print("sprayLeft")
                 nozzleControl.sprayLeft()
+                robot_movement.move_forward(MOVE_AFTER_SPRAY)
+                time.sleep(1)
             elif decisionMaker.spray_right:
+                print("sprayRight")
                 nozzleControl.sprayRight()
+                robot_movement.move_forward(MOVE_AFTER_SPRAY)
+                time.sleep(1)
+            decisionMaker.spray_left = 0
+            decisionMaker.spray_right = 0
             ###################### END ACTION SECTION #############################
 
             if cv.waitKey(1) & 0xFF == ord('q'):
@@ -158,8 +168,12 @@ if __name__ == "__main__":
             distance_to_green_circle_cm = convert_pixels_to_cm_y_axis(distance_to_green_circle_pixels, frame_height)
             
             # Move forward if distance to green circle is greater than 0.5 cm
-            if distance_to_green_circle_cm > MOVE_STEP_CM:
-                robot_movement.move_forward(MOVE_STEP_CM)
+            if decisionMaker.stop != 1:
+                minMove = min(MOVE_STEP_CM, distance_to_green_circle_cm)
+                robot_movement.move_forward(minMove)
+                print(f"minMove: {minMove}")
+                print(f"MOVE_STEP_CM, distance_to_green_circle_cm: {MOVE_STEP_CM}, {distance_to_green_circle_cm}")
+                    
             
     finally:
         cv.destroyAllWindows()

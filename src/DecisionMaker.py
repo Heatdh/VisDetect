@@ -7,8 +7,8 @@ class DecisionMaker:
         self.spray_left = 0
         self.distance_to_green = 10000 # Default big value in number of pixels
 
-    def update_control(self, green_circle_coordinates, green_intersection, intersection_side):
-        if len(green_circle_coordinates) == 0:
+    def update_control(self, circle_data, green_circle_coordinates, green_intersection, intersection_side):
+        if len(circle_data) == 0:
             self.move = 0
             self.stop = 1
         else:
@@ -25,10 +25,11 @@ class DecisionMaker:
                 frame_center = np.array([len(green_circle_coordinates[0])/2, len(green_circle_coordinates)/2])
                 self.distance_to_green = int(closest_circle[0] - frame_center[0])
             else:
-                self.distance_to_green = 0
+                self.distance_to_green = 99999999
 
         if green_intersection:
             self.stop = 1
+            self.move = 0
             if intersection_side == 'right':
                 self.spray_right = 1
                 self.spray_left = 0

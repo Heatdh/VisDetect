@@ -3,7 +3,7 @@ import numpy as np
 
 class VisualDetector:
     def __init__(self):
-        pass
+        self.lastCircleData=None
 
     def detect_circles_blob(self,frame):
         params = cv.SimpleBlobDetector_Params()
@@ -79,8 +79,11 @@ class VisualDetector:
 
         return intersection_points
 
+
     def intersection_green_horizontal(self,circle_data, h):
-        print(circle_data)
+        if not self.lastCircleData or set(self.lastCircleData) != set(circle_data):
+            print(circle_data)
+            self.lastCircleData = circle_data
         intersection_points = []
         for keypoint in circle_data:
             x, y = int(keypoint[0]), int(keypoint[1])
