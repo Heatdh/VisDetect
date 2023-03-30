@@ -21,10 +21,18 @@ class JetsonRobotMovement():
                                         step_per_revolution=STEP_PER_REVOLUTION)
         self.square_degree_distance = 300
         self.square_degree_steps = int(self.square_degree_distance / (3.1416 * 10 / 200) / 1.8)
+        
+    def distance_in_cm_to_steps(self, distance_in_cm):
+        # Number of revolutions 
+        numRevolution = distance_in_cm / (WHEEL_DIAMETER_IN_CM * PI)
+        steps = numRevolution * STEP_PER_REVOLUTION
+        return int(steps)
 
     def move_forward(self, distance_in_cm):
         # Calculate the number of steps to move forward the specified distance in centimeter
-        steps = int(distance_in_cm / (PI * WHEEL_DIAMETER_IN_CM / STEP_PER_REVOLUTION) / STEP_ANGLE)
+        # TODO Fix this formula
+        # steps = int(distance_in_cm / (PI * WHEEL_DIAMETER_IN_CM / STEP_PER_REVOLUTION) / STEP_ANGLE)
+        steps = self.distance_in_cm_to_steps(distance_in_cm)
 
         # Move both wheels forward by the specified number of steps
         for _ in range(steps):
@@ -34,8 +42,9 @@ class JetsonRobotMovement():
     def move_backward(self, distance):
         # Calculate the number of steps to move forward the specified distance
         # (assuming a wheel diameter of 10cm and a step angle of 1.8 degrees)
-        steps = int(distance / (3.1416 * 10 / 200) / 1.8)
-
+        # steps = int(distance / (3.1416 * 10 / 200) / 1.8)
+        steps = self.distance_in_cm_to_steps(distance)
+        
         # Move both wheels forward by the specified number of steps
         for _ in range(steps):
             self.left_motor.move_steps(1, 'CCW')

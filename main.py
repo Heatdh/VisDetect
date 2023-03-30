@@ -14,6 +14,7 @@ from src.DecisionMaker import DecisionMaker
 from src.NozzleControl import NozzleControl
 from src.LaptopCamera import LaptopCamera
 from src.PiCamera import PiCamera
+from src.JetsonRobotMovement import JetsonRobotMovement
 
 
 # NOTE: adafruit_blinka already called GPIO.setmode(GPIO.TEGRA_SOC)
@@ -26,7 +27,23 @@ NOZZLE_RIGHT_CHANNEL=15
 
 app = Flask(__name__)
 cap = PiCamera()
+#cap = LaptopCamera()
 nozzleControl = NozzleControl(NOZZLE_LEFT_CHANNEL, NOZZLE_RIGHT_CHANNEL)
+
+# Set up board
+GPIO.setmode(GPIO.BOARD)
+# TODO define pins here
+LEFT_MOTOR_PINS = [11, 13, 15, 16]
+RIGHT_MOTOR_PINS = [18, 22, 32, 36]
+
+# TODO Define Raspberry Pi camera parameters
+CAMERA_HEIGHT_CM = 55.0
+FOCAL_LENGTH_X_CM = 50.0
+FOCAL_LENGTH_Y_CM = 50.0
+PRINCIPLA_POINT_X = 0
+PRINCIPLA_POINT_Y = 0
+ONE_FRAME_IN_REAL_WORLD_SPACE_CM = 21.0
+MOVE_STEP_CM = 0.5
 
 def gen(queue):
     while True:
@@ -47,12 +64,21 @@ def run_web_server(queue):
     app.queue = queue
     app.run()
 
-
+def convert_pixels_to_cm_y_axis(pixels, frame_height):
+    """ Convert distance in pixels in camera space to distance in centimeter in real world space.
+    From manual measurement, 1 frame height from camera at 55 cm is 21cm in real world space.
+    Args:
+        pixels (int): number of pixels in camera space
+    """
+    # TODO Check if this is correct
+    return  pixels / frame_height * ONE_FRAME_IN_REAL_WORLD_SPACE_CM
+    
 
 if __name__ == "__main__":
     queue = Queue() 
     vision_detector = VisualDetector()
     decisionMaker = DecisionMaker()
+    robot_movement = JetsonRobotMovement()
     t = Thread(target=run_web_server, args=(queue,))
     t.start()
 
@@ -118,6 +144,19 @@ if __name__ == "__main__":
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
+            
+            ########################## ROBOT MOVEMENT #############################
+            # Convert movement need in pixels to movement need in centimeters
+            # Check distanct to closest green circle
+            # Each step we move forward 0.5 cm
+            frame_height = frame.shape[0]
+            distance_to_green_circle_pixels = decisionMaker.distance_to_green
+            distance_to_green_circle_cm = convert_pixels_to_cm_y_axis(distance_to_green_circle_pixels, frame_height)
+            
+            # Move forward if distance to green circle is greater than 0.5 cm
+            if distance_to_green_circle_cm > MOVE_STEP_CM:
+                robot_movement.move_forward(MOVE_STEP_CM)
+            
     finally:
         cv.destroyAllWindows()
         GPIO.cleanup()
