@@ -19,7 +19,7 @@ class NozzleControl:
         self.rightServo.angle = 0
         time.sleep(0.5)
         self.DELAY_IN_SECOND=0.8
-        self.sprayAngle = 90
+        self.sprayAngle = 40
     
     def __del__(self):
         self.pca.deinit()
