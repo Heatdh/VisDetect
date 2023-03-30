@@ -16,9 +16,10 @@ class DecisionMaker:
             self.stop = 0
             closest_circle = None
             for circle in green_circle_coordinates:
-                if circle[1] >= len(green_circle_coordinates)/2:
-                    if closest_circle is None or abs(circle[0] - len(green_circle_coordinates[0])/2) < abs(closest_circle[0] - len(green_circle_coordinates[0])/2):
-                        closest_circle = circle
+                if circle[1] < len(green_circle_coordinates)/2:
+                    continue  # skip circles below the line
+                if closest_circle is None or circle[1] < closest_circle[1]:
+                    closest_circle = circle
             if closest_circle is not None:
                 # calculate distance to closest green circle
                 frame_center = np.array([len(green_circle_coordinates[0])/2, len(green_circle_coordinates)/2])
