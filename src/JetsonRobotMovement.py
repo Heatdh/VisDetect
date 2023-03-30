@@ -7,7 +7,7 @@ ROUND_PER_MINUTE = 1200 # TODO How many rounds can motor do in 1 minute
 STEP_PER_REVOLUTION = 3200*2 # TODO Check set up How many step for 1 round rotation
 ONE_ROUND_IN_DEGREE = 360 
 STEP_ANGLE = ONE_ROUND_IN_DEGREE / STEP_PER_REVOLUTION
-WHEELBASE_IN_CM = 30
+WHEELBASE_IN_CM = 27
 
 class JetsonRobotMovement():
     """ Controls the movement of the robot using the Nvidia Jetson Nano GPIO pins.
@@ -24,7 +24,7 @@ class JetsonRobotMovement():
                                        step_per_revolution=STEP_PER_REVOLUTION)
         self.right_motor = StepperMotor(*right_motor_pins, rpm=ROUND_PER_MINUTE,
                                         step_per_revolution=STEP_PER_REVOLUTION)
-        self.square_degree_distance = 300
+        self.square_degree_distance = 5000
         self.square_degree_steps = int(self.square_degree_distance / (3.1416 * 10 / 200) / 1.8)
 
     def _get_steps(self, distance_in_cm):

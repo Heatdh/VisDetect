@@ -15,7 +15,7 @@ GPIO.setmode(GPIO.TEGRA_SOC)
 robotMovement = JetsonRobotMovement(ENABLE_PIN, [LEFT_STEP_PIN, LEFT_DIR_PIN], [RIGHT_STEP_PIN, RIGHT_DIR_PIN])
 
 DISTANCE = 10
-ANGLE = 0
+ANGLE = None
 
 print("move forward")
 robotMovement.move_forward(DISTANCE)
