@@ -6,20 +6,27 @@ from flask import Flask, render_template, Response
 import time
 from threading import Thread
 import Jetson.GPIO as GPIO
+import board
 
 
 from src.VisualDetector import VisualDetector
 from src.DecisionMaker import DecisionMaker
+from src.NozzleControl import NozzleControl
 from src.LaptopCamera import LaptopCamera
 from src.PiCamera import PiCamera
 
+
+# NOTE: adafruit_blinka already called GPIO.setmode(GPIO.TEGRA_SOC)
+# the rest of the software MUST use this pin mode naming.
+
+# define pins here
+NOZZLE_LEFT_CHANNEL=4
+NOZZLE_RIGHT_CHANNEL=15
+
+
 app = Flask(__name__)
 cap = PiCamera()
-#cap = LaptopCamera()
-
-# Set up board
-GPIO.setmode(GPIO.BOARD)
-# define pins here
+nozzleControl = NozzleControl(NOZZLE_LEFT_CHANNEL, NOZZLE_RIGHT_CHANNEL)
 
 def gen(queue):
     while True:
@@ -88,7 +95,7 @@ if __name__ == "__main__":
                         intersection_side = 'left'
 
             decisionMaker.update_control(green_circle_coordinates, green_intersection, intersection_side)
-            ############################# DRAWING ONLY #############################
+            ############################# END DRAWING ONLY #############################
 
 
             cv.putText(frame_with_keypoints, f"Stop: {decisionMaker.stop}, Move: {decisionMaker.move}", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
@@ -99,6 +106,15 @@ if __name__ == "__main__":
             queue.put(frame_with_keypoints)
 
             cv.imshow('Robot Controller', frame_with_keypoints)
+
+            ######################### ACTION SECTION ##############################
+            if decisionMaker.spray_left and decisionMaker.spray_right:
+                nozzleControl.sprayBoth()
+            elif decisionMaker.spray_left:
+                nozzleControl.sprayLeft()
+            elif decisionMaker.spray_right:
+                nozzleControl.sprayRight()
+            ###################### END ACTION SECTION #############################
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
