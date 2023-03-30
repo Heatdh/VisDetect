@@ -22,13 +22,14 @@ from src.JetsonRobotMovement import JetsonRobotMovement
 
 # define pins here
 NOZZLE_LEFT_CHANNEL=4
-NOZZLE_RIGHT_CHANNEL=15
+NOZZLE_RIGHT_CHANNEL=11
 
 
 app = Flask(__name__)
 cap = PiCamera()
 #cap = LaptopCamera()
 nozzleControl = NozzleControl(NOZZLE_LEFT_CHANNEL, NOZZLE_RIGHT_CHANNEL)
+lastImage = None
 
 # Set up board
 GPIO.setmode(GPIO.BOARD)
@@ -47,13 +48,16 @@ MOVE_STEP_CM = 0.5
 
 def gen(queue):
     while True:
+        frame = None
         if not queue.empty():
             frame = queue.get()
-            ret, jpeg = cv.imencode('.jpg', frame)
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+            lastImage = frame
         else:
-            time.sleep(0.01)
+            frame = lastImage
+        ret, jpeg = cv.imencode('.jpg', frame)
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+
 
 @app.route('/video_feed')
 def video_feed():

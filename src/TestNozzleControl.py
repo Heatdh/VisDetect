@@ -2,7 +2,7 @@ import time
 
 from NozzleControl import NozzleControl
 
-nozzleControl = NozzleControl(4, 15)
+nozzleControl = NozzleControl(4, 11)
 print("start spraying left")
 nozzleControl.sprayLeft()
 time.sleep(2)
