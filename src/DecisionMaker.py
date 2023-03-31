@@ -7,8 +7,8 @@ class DecisionMaker:
         self.spray_left = 0
         self.distance_to_green = 10000 # Default big value in number of pixels
 
-    def update_control(self, green_circle_coordinates, green_intersection, intersection_side):
-        if len(green_circle_coordinates) == 0:
+    def update_control(self, circle_data, green_circle_coordinates, green_intersection, intersection_side):
+        if len(circle_data) == 0:
             self.move = 0
             self.stop = 1
         else:

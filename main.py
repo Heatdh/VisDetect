@@ -24,6 +24,7 @@ from src.JetsonRobotMovement import JetsonRobotMovement
 NOZZLE_LEFT_CHANNEL=4
 NOZZLE_RIGHT_CHANNEL=11
 
+threshold = 20  
 
 app = Flask(__name__)
 cap = PiCamera()
@@ -124,7 +125,7 @@ if __name__ == "__main__":
                     else:
                         intersection_side = 'left'
 
-            decisionMaker.update_control(green_circle_coordinates, green_intersection, intersection_side)
+            decisionMaker.update_control(circle_data, green_circle_coordinates, green_intersection, intersection_side)
             ############################# END DRAWING ONLY #############################
 
 
@@ -139,11 +140,14 @@ if __name__ == "__main__":
 
             ######################### ACTION SECTION ##############################
             if decisionMaker.spray_left and decisionMaker.spray_right:
-                nozzleControl.sprayBoth()
+                if abs(decisionMaker.distance_to_green) <= threshold:
+                    nozzleControl.sprayBoth()
             elif decisionMaker.spray_left:
-                nozzleControl.sprayLeft()
+                if abs(decisionMaker.distance_to_green) <= threshold:
+                    nozzleControl.sprayLeft()
             elif decisionMaker.spray_right:
-                nozzleControl.sprayRight()
+                if abs(decisionMaker.distance_to_green) <= threshold:
+                    nozzleControl.sprayRight()
             ###################### END ACTION SECTION #############################
 
             if cv.waitKey(1) & 0xFF == ord('q'):
