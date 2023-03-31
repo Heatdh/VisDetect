@@ -44,7 +44,7 @@ PRINCIPLA_POINT_Y = 0
 ONE_FRAME_IN_REAL_WORLD_SPACE_CM = 21.0
 MOVE_STEP_CM = 0.5
 
-threshold = 20
+threshold = 350
 
 def gen(queue):
     while True:
