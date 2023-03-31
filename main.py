@@ -44,6 +44,8 @@ PRINCIPLA_POINT_Y = 0
 ONE_FRAME_IN_REAL_WORLD_SPACE_CM = 21.0
 MOVE_STEP_CM = 0.5
 
+threshold = 20
+
 def gen(queue):
     while True:
         frame = None
@@ -138,22 +140,16 @@ if __name__ == "__main__":
             ######################### ACTION SECTION ##############################
             MOVE_AFTER_SPRAY = 5
             if decisionMaker.spray_left and decisionMaker.spray_right:
-                print("sprayBoth")
-                nozzleControl.sprayBoth()
-                robot_movement.move_forward(MOVE_AFTER_SPRAY)
-                time.sleep(1)
+                if abs(decisionMaker.distance_to_green) <= threshold:
+                    nozzleControl.sprayBoth()
             elif decisionMaker.spray_left:
-                print("sprayLeft")
-                nozzleControl.sprayLeft()
-                robot_movement.move_forward(MOVE_AFTER_SPRAY)
-                time.sleep(1)
+                if abs(decisionMaker.distance_to_green) <= threshold:
+                    nozzleControl.sprayLeft()
             elif decisionMaker.spray_right:
-                print("sprayRight")
-                nozzleControl.sprayRight()
-                robot_movement.move_forward(MOVE_AFTER_SPRAY)
-                time.sleep(1)
-            decisionMaker.spray_left = 0
-            decisionMaker.spray_right = 0
+                if abs(decisionMaker.distance_to_green) <= threshold:
+                    nozzleControl.sprayRight()
+                    decisionMaker.spray_left = 0
+                    decisionMaker.spray_right = 0
             ###################### END ACTION SECTION #############################
 
             if cv.waitKey(1) & 0xFF == ord('q'):
